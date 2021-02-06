@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import time
 from urllib import request
 from lxml import etree
 import re
 
 class SzSecurityHousingPipeline(object):
+
+
 	def process_item(self, item, spider):
-		print(item)
-		url='http://bzflh.szjs.gov.cn/TylhW/lhmcAction.do?method=queryDetailLhc&lhmcId=%s&waittype=2'%(item['userid'])
-		print(url)
+		# print(item)
+		url='http://zjj.sz.gov.cn/bzflh/lhmcAction.do?method=queryDetailLhc&lhmcId=%s&waittype=2'%(item['userid'])
+		# print(url)
 		try:
 			response = request.urlopen(url,timeout=5)
 			page = response.read()
@@ -21,10 +24,13 @@ class SzSecurityHousingPipeline(object):
 			item['num']=num
 		except Exception:
 			print ("Error:%s"%(item['seqno']))
-		else:	
-			print ("Success:%s"%(item['seqno']))
-		ret=str(item['userid'])+','+str(item['seqno'])+","+str(item['applyNo'])+","+str(item['num'])+","+str(item['place'])+"\n"
-		saveFile = open('data.txt','a')  
+			print(repr(e))
+
+		# else:	
+		# 	print ("Success:%s"%(item['seqno']))
+		ret=str(item['userid'])+','+str(item['username'])+','+str(item['seqno'])+","+str(item['applyNo'])+","+str(item['num'])+","+str(item['place'])+"\n"
+		today = time.strftime("%Y-%m-%d",time.localtime(time.time()))
+		saveFile = open('data_'+today+'.txt','a')  
 		saveFile.write(ret)  
 		saveFile.close()  
 		# print(item)
